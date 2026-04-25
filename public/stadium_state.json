@@ -1,0 +1,26 @@
+[
+  {
+    "id": "nw",
+    "occupancyRate": 0.51
+  },
+  {
+    "id": "ne",
+    "occupancyRate": 0.7637117763766892
+  },
+  {
+    "id": "e",
+    "occupancyRate": 0.52
+  },
+  {
+    "id": "se",
+    "occupancyRate": 0.6425214162660174
+  },
+  {
+    "id": "sw",
+    "occupancyRate": 0.86
+  },
+  {
+    "id": "w",
+    "occupancyRate": 0.873260027329301
+  }
+]

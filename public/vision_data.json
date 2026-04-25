@@ -1,0 +1,34 @@
+[
+  {
+    "zone_id": "Gate_A",
+    "occupancy": 77.5,
+    "status": "Critical",
+    "count": 116,
+    "wait_time": 32,
+    "last_update": "14:10:50"
+  },
+  {
+    "zone_id": "Concourse_B",
+    "occupancy": 40.670964238783,
+    "status": "Busy",
+    "count": 61,
+    "wait_time": 12,
+    "last_update": "13:24:21"
+  },
+  {
+    "zone_id": "Food_Court",
+    "occupancy": 43.12618638295661,
+    "status": "Busy",
+    "count": 65,
+    "wait_time": 12,
+    "last_update": "13:24:21"
+  },
+  {
+    "zone_id": "Gate_C",
+    "occupancy": 56.46430096127109,
+    "status": "Busy",
+    "count": 85,
+    "wait_time": 13,
+    "last_update": "13:24:21"
+  }
+]
