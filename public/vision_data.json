@@ -1,11 +1,11 @@
 [
   {
     "zone_id": "Gate_A",
-    "occupancy": 77.5,
+    "occupancy": 81,
     "status": "Critical",
-    "count": 116,
+    "count": 122,
     "wait_time": 32,
-    "last_update": "14:10:50"
+    "last_update": "16:16:42"
   },
   {
     "zone_id": "Concourse_B",

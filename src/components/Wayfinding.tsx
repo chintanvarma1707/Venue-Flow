@@ -1,6 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Navigation, MapPin, X, 
+  Compass, ArrowUp, Info,
+  LogOut, Activity, Signal, TrendingUp
+} from 'lucide-react';
 
 interface VisionStats {
   zone_id: string;
@@ -24,11 +30,8 @@ const Wayfinding = () => {
         const res = await fetch(`/vision_data.json?t=${Date.now()}`);
         const data = await res.json();
         setVisionData(data);
-      } catch (err) {
-        console.error('Failed to fetch vision data', err);
-      }
+      } catch (err) { console.error('Fetch failed', err); }
     };
-
     fetchData();
     const interval = setInterval(fetchData, 2000);
     return () => clearInterval(interval);
@@ -47,139 +50,139 @@ const Wayfinding = () => {
   const getOptimalExit = () => {
     const gates = visionData.filter(v => v.zone_id.startsWith('Gate'));
     if (gates.length === 0) return 'Gate A';
-    
-    // Simple logic: Find gate with lowest occupancy
     const optimal = gates.reduce((prev, curr) => prev.occupancy < curr.occupancy ? prev : curr);
     return optimal.zone_id.replace('_', ' ');
   };
 
-  if (!active) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {/* AR Seat Navigation */}
-        <div 
-          onClick={() => { setNavigationMode('seat'); setActive(true); }}
-          style={{ 
-            background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '24px',
-            padding: '20px', 
-            cursor: 'pointer',
-            position: 'relative',
-            overflow: 'hidden',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', position: 'relative', zIndex: 1 }}>
-            <div style={{ background: 'linear-gradient(135deg, var(--accent-cyan) 0%, #3b82f6 100%)', padding: '16px', borderRadius: '18px', color: 'black' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-            </div>
-            <div style={{ flex: 1 }}>
-              <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>AR Wayfinding</h4>
-              <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>Navigate to your assigned seat</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Dynamic Exit Routing Card */}
-        <div 
-          onClick={() => { setNavigationMode('exit'); setActive(true); }}
-          style={{ 
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            borderRadius: '24px',
-            padding: '20px', 
-            cursor: 'pointer',
-            position: 'relative',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <div style={{ background: '#ef4444', padding: '16px', borderRadius: '18px', color: 'white' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Smart Exit Routing</h4>
-                <div style={{ width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }} />
-              </div>
-              <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>Recommended: <span style={{ color: '#ef4444', fontWeight: 900 }}>{getOptimalExit()}</span> (Low Density)</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 3000, background: '#000', overflow: 'hidden' }}>
-      
-      {/* Mock Camera Feed with scan lines */}
-      <div style={{ position: 'absolute', inset: 0, background: 'url(/hero-banner.png) center/cover', opacity: 0.4 }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.2) 50%)', backgroundSize: '100% 4px', pointerEvents: 'none' }} />
-      
-      {/* HUD Corner Brackets */}
-      <div style={{ position: 'absolute', top: '40px', left: '20px', width: '40px', height: '40px', borderTop: '3px solid var(--accent-cyan)', borderLeft: '3px solid var(--accent-cyan)' }} />
-      <div style={{ position: 'absolute', top: '40px', right: '20px', width: '40px', height: '40px', borderTop: '3px solid var(--accent-cyan)', borderRight: '3px solid var(--accent-cyan)' }} />
-
-      {/* AR Overlays */}
-      <div style={{ position: 'relative', height: '100%', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        
-        {/* HUD Header Status */}
-        <div style={{ position: 'absolute', top: '50px', left: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(0,0,0,0.5)', padding: '8px 16px', borderRadius: '20px', backdropFilter: 'blur(10px)', border: '1px solid rgba(34,211,238,0.3)' }}>
-            <div className="pulse" style={{ width: '8px', height: '8px', background: '#4ade80', borderRadius: '50%', boxShadow: '0 0 10px #4ade80' }} />
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', letterSpacing: '0.1em' }}>{navigationMode === 'exit' ? 'EXIT ROUTING ACTIVE' : 'SEAT TRACKING ACTIVE'}</span>
-          </div>
-        </div>
-
-        {/* Animated Directional Arrows (The navigation UI) */}
-        <div style={{ position: 'absolute', bottom: '25%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', animation: 'flow 2s infinite linear' }}>
-          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.3 }}><polyline points="18 15 12 9 6 15"/></svg>
-          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6 }}><polyline points="18 15 12 9 6 15"/></svg>
-          <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-        </div>
-
-        {/* Floating Destination Marker */}
-        <div style={{ transform: 'perspective(500px) translateY(-100px)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ 
-            background: 'rgba(2,6,23,0.8)', 
-            border: `2px solid ${navigationMode === 'exit' ? '#ef4444' : 'var(--accent-cyan)'}`, 
-            padding: '16px 32px', 
-            borderRadius: '16px',
-            textAlign: 'center',
-            backdropFilter: 'blur(12px)',
-            boxShadow: `0 0 40px ${navigationMode === 'exit' ? 'rgba(239,68,68,0.4)' : 'rgba(34,211,238,0.4)'}`,
-            marginBottom: '16px'
-          }}>
-            <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#fff' }}>{navigationMode === 'exit' ? getOptimalExit() : 'SEC 204'}</h2>
-            <div style={{ fontSize: '0.8rem', color: navigationMode === 'exit' ? '#ef4444' : 'var(--accent-cyan)', fontWeight: 800, marginTop: '4px' }}>{navigationMode === 'exit' ? 'OPTIMAL EXIT PATH' : 'ROW J • SEAT 12'}</div>
-          </div>
-          <div style={{ width: '4px', height: '40px', background: `linear-gradient(to bottom, ${navigationMode === 'exit' ? '#ef4444' : 'var(--accent-cyan)'}, transparent)` }} />
-        </div>
-
-        {/* Close Button & Distance Left */}
-        <div style={{ position: 'absolute', bottom: '40px', width: '100%', padding: '0 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <div style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid var(--accent-cyan)', padding: '16px', borderRadius: '20px', backdropFilter: 'blur(10px)' }}>
-            <div style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '4px' }}>EST. ARRIVAL</div>
-            <div style={{ fontSize: '2rem', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{Math.ceil(distance / 10)}<span style={{ fontSize: '1rem' }}>m</span></div>
-          </div>
-
-          <button 
-            onClick={() => setActive(false)}
-            style={{ background: 'rgba(239,68,68,0.2)', color: '#ef4444', border: '1px solid #ef4444', padding: '20px', borderRadius: '50%', backdropFilter: 'blur(10px)', cursor: 'pointer' }}
+    <div style={{ padding: '0 4px' }}>
+      <AnimatePresence mode="wait">
+        {!active ? (
+          <motion.div 
+            key="selection" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
           >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-      </div>
+            <motion.div 
+              whileTap={{ scale: 0.98 }} onClick={() => { setNavigationMode('seat'); setActive(true); }}
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%)',
+                border: '1px solid rgba(34, 211, 238, 0.2)', borderRadius: '24px', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', zIndex: 2 }}>
+                <div style={{ background: 'var(--accent-cyan)', padding: '10px', borderRadius: '14px', color: '#000' }}>
+                  <Navigation size={22} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 950, color: '#fff', margin: 0 }}>AR_PRECISION_PATH</h4>
+                  <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', fontWeight: 800, marginTop: '2px', letterSpacing: '0.02em' }}>TO: SEC_204_ROW_F</p>
+                </div>
+                <Compass size={18} color="var(--accent-cyan)" className="spin-slow" />
+              </div>
+            </motion.div>
+
+            <motion.div 
+              whileTap={{ scale: 0.98 }} onClick={() => { setNavigationMode('exit'); setActive(true); }}
+              style={{ 
+                background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.15)',
+                borderRadius: '24px', padding: '20px', cursor: 'pointer'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ background: '#ef4444', padding: '10px', borderRadius: '14px', color: 'white' }}>
+                  <LogOut size={22} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 950, color: '#fff', margin: 0 }}>SMART_EXIT_HUD</h4>
+                  <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', fontWeight: 800, marginTop: '2px' }}>VIA: <span style={{ color: '#ef4444' }}>{getOptimalExit()}</span></p>
+                </div>
+                <TrendingUp size={18} color="#ef4444" />
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : (
+          <motion.div 
+            key="ar-hud" initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
+            style={{ position: 'fixed', inset: 0, zIndex: 3000, background: '#000', overflow: 'hidden' }}
+          >
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 10%, #000 130%)', zIndex: 1 }} />
+            <div className="scanlines" />
+
+            <div style={{ position: 'relative', height: '100%', width: '100%', zIndex: 10, display: 'flex', flexDirection: 'column' }}>
+              <div style={{ padding: 'clamp(32px, 8vw, 50px) 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ background: 'rgba(15, 23, 42, 0.95)', border: '1px solid rgba(34, 211, 238, 0.2)', padding: '10px 14px', borderRadius: '12px', backdropFilter: 'blur(32px)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div className="pulse" style={{ width: '5px', height: '5px', background: '#22d3ee', borderRadius: '50%' }} />
+                  <span style={{ fontSize: '0.55rem', fontWeight: 950, color: '#fff', letterSpacing: '0.1em' }}>AR_LINK_ESTABLISHED</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-cyan)', background: 'rgba(0,0,0,0.5)', padding: '6px 10px', borderRadius: '10px' }}>
+                  <Signal size={12} />
+                  <span style={{ fontSize: '0.7rem', fontWeight: 950 }}>{Math.round(signalStrength)}%</span>
+                </div>
+              </div>
+
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <motion.div 
+                  animate={{ y: [-10, 10, -10] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '90%' }}
+                >
+                  <div style={{ 
+                    background: 'rgba(2, 6, 23, 0.9)', border: `2px solid ${navigationMode === 'exit' ? '#ef4444' : 'var(--accent-cyan)'}`, 
+                    padding: 'clamp(20px, 6vw, 32px)', borderRadius: '28px', textAlign: 'center', backdropFilter: 'blur(40px)',
+                    boxShadow: `0 0 50px ${navigationMode === 'exit' ? 'rgba(239,68,68,0.2)' : 'rgba(34,211,238,0.15)'}`, width: '100%', maxWidth: '300px'
+                  }}>
+                    <div style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.4)', fontWeight: 900, letterSpacing: '0.15em', marginBottom: '6px' }}>NAV_TARGET_LOCK</div>
+                    <h2 style={{ fontSize: 'clamp(1.5rem, 7vw, 2.2rem)', fontWeight: 950, color: '#fff', margin: 0, lineHeight: 1, letterSpacing: '-0.04em' }}>{navigationMode === 'exit' ? getOptimalExit() : 'SECTION_204'}</h2>
+                  </div>
+                  <div style={{ width: '2px', height: '30px', background: `linear-gradient(to bottom, ${navigationMode === 'exit' ? '#ef4444' : 'var(--accent-cyan)'}, transparent)` }} />
+                </motion.div>
+
+                <div style={{ position: 'absolute', bottom: '18%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {[1, 0.6, 0.2].map((op, i) => (
+                    <motion.div
+                      key={i} animate={{ y: [30, -30], opacity: [0, op, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
+                      style={{ color: navigationMode === 'exit' ? '#ef4444' : 'var(--accent-cyan)', marginTop: '-15px' }}
+                    >
+                      <ArrowUp size={50 - i * 12} strokeWidth={4} />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ padding: '20px 20px clamp(40px, 8vw, 60px)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                <div style={{ background: 'rgba(15, 23, 42, 0.95)', border: '1px solid rgba(255,255,255,0.08)', padding: '14px 18px', borderRadius: '18px', backdropFilter: 'blur(32px)' }}>
+                  <div style={{ fontSize: '0.5rem', color: 'rgba(255,255,255,0.3)', fontWeight: 950, marginBottom: '2px', letterSpacing: '0.05em' }}>DISTANCE</div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 950, color: '#fff', lineHeight: 1 }}>{Math.ceil(distance / 5)}<span style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', marginLeft: '4px' }}>M</span></div>
+                </div>
+
+                <motion.button 
+                  whileTap={{ scale: 0.9 }} onClick={() => setActive(false)}
+                  style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '2px solid #ef4444', width: '56px', height: '56px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <X size={24} strokeWidth={3} />
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Corner Bracket Overlays */}
+            <div style={{ position: 'absolute', inset: '20px', border: '1px solid rgba(255,255,255,0.05)', pointerEvents: 'none', zIndex: 5 }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '15px', height: '15px', borderTop: '2px solid var(--accent-cyan)', borderLeft: '2px solid var(--accent-cyan)' }} />
+              <div style={{ position: 'absolute', top: 0, right: 0, width: '15px', height: '15px', borderTop: '2px solid var(--accent-cyan)', borderRight: '2px solid var(--accent-cyan)' }} />
+              <div style={{ position: 'absolute', bottom: 0, left: 0, width: '15px', height: '15px', borderBottom: '2px solid var(--accent-cyan)', borderLeft: '2px solid var(--accent-cyan)' }} />
+              <div style={{ position: 'absolute', bottom: 0, right: 0, width: '15px', height: '15px', borderBottom: '2px solid var(--accent-cyan)', borderRight: '2px solid var(--accent-cyan)' }} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style jsx>{`
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes flow { 0% { transform: translateY(20px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-40px); opacity: 0; } }
+        .scanlines { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; z-index: 2; pointer-events: none; opacity: 0.2; }
+        @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.5; } }
+        .pulse { animation: pulse 2s infinite; }
+        .spin-slow { animation: spin 4s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
     </div>
   );
 };
 
 export default Wayfinding;
-

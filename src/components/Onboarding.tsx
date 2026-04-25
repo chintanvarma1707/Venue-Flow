@@ -57,7 +57,7 @@ const Onboarding = ({ onComplete }: OnboardingProps) => {
           </div>
           
           <h1 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-0.04em', marginBottom: '12px' }}>
-            Welcome to <span style={{ color: 'var(--accent-cyan)' }}>VenueFlow</span>
+            Welcome to <span style={{ color: 'var(--accent-cyan)' }}>ApexStadium</span>
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '1.1rem', marginBottom: '40px', lineHeight: 1.5 }}>
             Enter your seat number to begin your premium stadium experience.

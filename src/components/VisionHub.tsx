@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Camera, X, Activity, Eye, Zap, Shield, Maximize, Cpu, Scan } from 'lucide-react';
 
 interface CameraFeed {
   id: string;
@@ -29,203 +31,163 @@ const VisionHub = ({ onClose }: { onClose: () => void }) => {
   const currentCam = cams[activeCam];
 
   return (
-    <div style={{ 
-      position: 'fixed', 
-      inset: 0, 
-      zIndex: 2000, 
-      background: '#020617', 
-      display: 'flex', 
-      flexDirection: 'column',
-      fontFamily: 'Inter, sans-serif'
-    }}>
-      {/* Header */}
-      <div style={{ 
-        padding: '20px', 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        background: 'rgba(255,255,255,0.02)',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
-        backdropFilter: 'blur(20px)'
+    <motion.div 
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      style={{ 
+        position: 'fixed', inset: 0, zIndex: 3000, background: '#000', 
+        display: 'flex', flexDirection: 'column', fontFamily: 'Inter, sans-serif'
       }}>
+      
+      {/* Header */}
+      <motion.div 
+        initial={{ y: -20 }} animate={{ y: 0 }}
+        style={{ 
+          padding: 'clamp(16px, 4vw, 24px) clamp(16px, 5vw, 32px)', 
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          background: 'rgba(15, 23, 42, 0.95)', borderBottom: '1px solid rgba(255,255,255,0.08)',
+          backdropFilter: 'blur(32px)', zIndex: 100
+        }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ 
-            background: 'rgba(34, 211, 238, 0.1)', 
-            padding: '8px', 
-            borderRadius: '10px',
-            border: '1px solid rgba(34, 211, 238, 0.2)'
-          }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" strokeWidth="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <div style={{ background: 'rgba(34, 211, 238, 0.1)', padding: 'clamp(8px, 2vw, 10px)', borderRadius: '14px', border: '1px solid rgba(34, 211, 238, 0.3)' }}>
+            <Scan size={20} color="var(--accent-cyan)" />
           </div>
           <div>
-            <h3 style={{ fontSize: '1rem', fontWeight: 900, color: '#fff', letterSpacing: '-0.02em' }}>VISIONFLOW AI</h3>
-            <p style={{ fontSize: '0.65rem', color: 'var(--accent-cyan)', fontWeight: 800 }}>LIVE CROWD ANALYTICS</p>
+            <h3 style={{ fontSize: 'clamp(0.9rem, 3.5vw, 1.1rem)', fontWeight: 950, color: '#fff', letterSpacing: '-0.02em', margin: 0 }}>VISION_NEURAL_HUD</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+              <div className="pulse" style={{ width: '5px', height: '5px', background: '#22d3ee', borderRadius: '50%' }} />
+              <p style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)', fontWeight: 800, letterSpacing: '0.1em', margin: 0 }}>LIVE_DATALINK_ESTABLISHED</p>
+            </div>
           </div>
         </div>
-        <button 
-          onClick={onClose}
-          style={{ 
-            background: 'rgba(255,255,255,0.05)', 
-            border: '1px solid rgba(255,255,255,0.1)', 
-            color: '#fff', 
-            width: '40px', 
-            height: '40px', 
-            borderRadius: '12px',
-            cursor: 'pointer'
-          }}
+        <motion.button 
+          whileTap={{ scale: 0.9 }} onClick={onClose}
+          style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: '#fff', width: '40px', height: '40px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
-          ✕
-        </button>
-      </div>
+          <X size={22} strokeWidth={3} />
+        </motion.button>
+      </motion.div>
 
       {/* Main Viewport */}
-      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', padding: '10px' }}>
-        <div style={{ 
-          width: '100%', 
-          height: '100%', 
-          borderRadius: '24px', 
-          background: '#000', 
-          position: 'relative',
-          overflow: 'hidden',
-          border: '1px solid rgba(255,255,255,0.1)'
-        }}>
-          {loading ? (
-            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-              <div className="pulse" style={{ width: '60px', height: '60px', borderRadius: '50%', border: '2px solid var(--accent-cyan)', borderTopColor: 'transparent', animation: 'spin 1s linear infinite' }} />
-              <p style={{ color: 'var(--accent-cyan)', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.1em' }}>INITIALIZING VISION NEURAL LINK...</p>
-            </div>
-          ) : (
-            <>
-              {/* Simulated Feed Background */}
-              <div style={{ 
-                position: 'absolute', 
-                inset: 0, 
-                background: `url(/cam-${currentCam.id.split('-')[1].toLowerCase()}.png) center/cover`,
-                opacity: 0.6,
-                filter: 'grayscale(30%) contrast(120%) brightness(0.8)'
-              }} />
-              
-              {/* Camera Lens Vignette */}
-              <div style={{ 
-                position: 'absolute', 
-                inset: 0, 
-                background: 'radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 100%)',
-                pointerEvents: 'none'
-              }} />
-
-              {/* CRT Scanlines Overlay */}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))', backgroundSize: '100% 4px, 3px 100%', pointerEvents: 'none', opacity: 0.5 }} />
-
-              {/* AI Overlay Elements */}
-              <div style={{ position: 'absolute', inset: '40px', pointerEvents: 'none' }}>
-                {/* Bounding Boxes */}
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', padding: 'clamp(8px, 2vw, 20px)' }}>
+        <motion.div 
+          initial={{ scale: 0.98, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+          style={{ 
+            width: '100%', height: '100%', borderRadius: 'clamp(20px, 4vw, 32px)', 
+            background: '#050505', position: 'relative', overflow: 'hidden',
+            border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 20px 80px rgba(0,0,0,0.8)'
+          }}>
+          
+          <AnimatePresence mode="wait">
+            {loading ? (
+              <motion.div 
+                key="loader" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px' }}
+              >
+                <div style={{ position: 'relative' }}>
+                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid rgba(34, 211, 238, 0.1)', borderTopColor: 'var(--accent-cyan)' }} />
+                  <Cpu style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0.5 }} size={20} color="var(--accent-cyan)" />
+                </div>
+                <p style={{ color: 'var(--accent-cyan)', fontSize: '0.65rem', fontWeight: 950, letterSpacing: '0.2em' }}>BUFFERING_STREAM...</p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key={currentCam.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}
+                style={{ position: 'absolute', inset: 0 }}
+              >
+                <div className="neural-grid" />
+                <div className="crt-effect" style={{ position: 'absolute', inset: 0, zIndex: 5, pointerEvents: 'none' }} />
+                
+                {/* AI Tracking Visuals */}
                 {[
-                  { t: '15%', l: '20%', w: '40px', h: '60px', id: 'P-992' },
-                  { t: '45%', l: '60%', w: '45px', h: '65px', id: 'P-104' },
-                  { t: '30%', l: '35%', w: '38px', h: '55px', id: 'P-442' },
-                  { t: '60%', l: '15%', w: '42px', h: '62px', id: 'P-021' },
+                  { t: '25%', l: '20%', w: '12%', h: '22%', id: 'ID_772' },
+                  { t: '40%', l: '65%', w: '15%', h: '28%', id: 'ID_901' },
+                  { t: '60%', l: '35%', w: '10%', h: '20%', id: 'ID_114' },
                 ].map((box, i) => (
-                  <div key={i} style={{ 
-                    position: 'absolute', 
-                    top: box.t, 
-                    left: box.l, 
-                    width: box.w, 
-                    height: box.h, 
-                    border: '1px solid var(--accent-cyan)',
-                    boxShadow: '0 0 10px rgba(34, 211, 238, 0.3)'
-                  }}>
-                    <div style={{ 
-                      position: 'absolute', 
-                      top: '-15px', 
-                      left: '-1px', 
-                      background: 'var(--accent-cyan)', 
-                      color: '#000', 
-                      fontSize: '8px', 
-                      fontWeight: 900, 
-                      padding: '1px 4px' 
-                    }}>{box.id}</div>
-                  </div>
+                  <motion.div 
+                    key={i} animate={{ x: [0, 5, 0], y: [0, -5, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
+                    style={{ position: 'absolute', top: box.t, left: box.l, width: box.w, height: box.h, border: '1px solid var(--accent-cyan)', boxShadow: '0 0 15px rgba(34, 211, 238, 0.2)', zIndex: 10 }}
+                  >
+                    <div style={{ position: 'absolute', top: '-16px', left: '-1px', background: 'var(--accent-cyan)', color: '#000', fontSize: '8px', fontWeight: 950, padding: '1px 5px', whiteSpace: 'nowrap' }}>
+                      {box.id} // VERIFIED
+                    </div>
+                  </motion.div>
                 ))}
 
-                {/* Heatmap Area */}
-                <div style={{ 
-                  position: 'absolute', 
-                  bottom: '10%', 
-                  right: '10%', 
-                  width: '150px', 
-                  height: '150px', 
-                  borderRadius: '50%', 
-                  background: 'radial-gradient(circle, rgba(239,68,68,0.4) 0%, rgba(239,68,68,0.1) 50%, transparent 100%)',
-                  filter: 'blur(20px)',
-                  animation: 'pulse 3s infinite'
-                }} />
-                <div style={{ position: 'absolute', bottom: '8%', right: '12%', color: '#ef4444', fontSize: '10px', fontWeight: 900 }}>DENSITY HOTSPOT (92%)</div>
-              </div>
-
-              {/* HUD Telemetry */}
-              <div style={{ position: 'absolute', top: '20px', left: '20px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div style={{ fontSize: '0.8rem', fontWeight: 900, color: '#fff' }}>{currentCam.id} // {currentCam.name}</div>
-                <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.5)' }}>REC ● 24.04.2026 // 20:34:12</div>
-              </div>
-
-              <div style={{ position: 'absolute', bottom: '20px', left: '20px', background: 'rgba(0,0,0,0.6)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: currentCam.status === 'congested' ? '#ef4444' : currentCam.status === 'busy' ? '#f97316' : '#4ade80' }} />
-                  <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#fff', textTransform: 'uppercase' }}>STATUS: {currentCam.status}</span>
+                {/* Cam ID Overlay */}
+                <div style={{ position: 'absolute', top: 'clamp(16px, 4vw, 24px)', left: 'clamp(16px, 4vw, 24px)', zIndex: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ background: '#ef4444', width: '8px', height: '8px', borderRadius: '50%', animation: 'blink 1s infinite' }} />
+                    <span style={{ fontSize: 'clamp(1.1rem, 4vw, 1.5rem)', fontWeight: 950, color: '#fff', letterSpacing: '-0.04em' }}>LIVE::{currentCam.id}</span>
+                  </div>
+                  <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', fontWeight: 800, marginTop: '2px', letterSpacing: '0.05em' }}>LOC: {currentCam.name}</div>
                 </div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>{currentCam.occupancy}% <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)' }}>FLOW RATE</span></div>
-              </div>
 
-              {/* Target Reticle */}
-              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '100px', height: '100px', pointerEvents: 'none' }}>
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '20px', height: '20px', borderTop: '2px solid white', borderLeft: '2px solid white' }} />
-                <div style={{ position: 'absolute', top: 0, right: 0, width: '20px', height: '20px', borderTop: '2px solid white', borderRight: '2px solid white' }} />
-                <div style={{ position: 'absolute', bottom: 0, left: 0, width: '20px', height: '20px', borderBottom: '2px solid white', borderLeft: '2px solid white' }} />
-                <div style={{ position: 'absolute', bottom: 0, right: 0, width: '20px', height: '20px', borderBottom: '2px solid white', borderRight: '2px solid white' }} />
-                <div style={{ position: 'absolute', top: '50%', left: '50%', width: '4px', height: '4px', background: 'white', borderRadius: '50%', transform: 'translate(-50%, -50%)' }} />
-              </div>
-            </>
-          )}
-        </div>
+                {/* Telemetry Footer */}
+                <div style={{ 
+                  position: 'absolute', bottom: 'clamp(12px, 3vw, 20px)', left: 'clamp(12px, 3vw, 20px)', right: 'clamp(12px, 3vw, 20px)',
+                  background: 'rgba(15, 23, 42, 0.9)', padding: 'clamp(12px, 3vw, 20px)', borderRadius: '20px', 
+                  border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(32px)',
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 20
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 32px)' }}>
+                    <div>
+                      <div style={{ fontSize: '0.55rem', fontWeight: 900, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>THREAT_LVL</div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 950, color: currentCam.status === 'congested' ? '#ef4444' : '#4ade80' }}>{currentCam.status.toUpperCase()}</div>
+                    </div>
+                    <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }} />
+                    <div>
+                      <div style={{ fontSize: 'clamp(1rem, 4vw, 1.4rem)', fontWeight: 950, color: 'var(--accent-cyan)', lineHeight: 1 }}>{currentCam.occupancy}%</div>
+                      <div style={{ fontSize: '0.5rem', color: 'rgba(255,255,255,0.3)', fontWeight: 900, marginTop: '2px' }}>NEURAL_DENSITY</div>
+                    </div>
+                  </div>
+                  <div style={{ padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px' }}>
+                    <Maximize size={16} color="#fff" />
+                  </div>
+                </div>
+
+                <div className="reticle" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
 
-      {/* Camera Selector Footbar */}
+      {/* Touch-Optimized Cam Selector */}
       <div style={{ 
-        padding: '20px', 
-        background: 'rgba(0,0,0,0.8)', 
-        borderTop: '1px solid rgba(255,255,255,0.05)',
-        display: 'flex',
-        gap: '12px',
-        overflowX: 'auto',
-        WebkitOverflowScrolling: 'touch'
+        padding: '16px', background: '#020617', borderTop: '1px solid rgba(255,255,255,0.08)',
+        display: 'flex', gap: '10px', overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none'
       }}>
         {cams.map((cam, i) => (
-          <button 
-            key={cam.id}
+          <motion.button 
+            key={cam.id} whileTap={{ scale: 0.95 }}
             onClick={() => { setActiveCam(i); setLoading(true); }}
             style={{ 
-              flexShrink: 0,
-              width: '120px',
-              padding: '12px',
-              borderRadius: '14px',
-              background: activeCam === i ? 'rgba(34, 211, 238, 0.15)' : 'rgba(255,255,255,0.02)',
-              border: `1px solid ${activeCam === i ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.05)'}`,
-              cursor: 'pointer',
-              textAlign: 'left',
-              transition: 'all 0.2s'
+              flexShrink: 0, width: 'clamp(130px, 35vw, 160px)', padding: '14px', borderRadius: '18px',
+              background: activeCam === i ? 'rgba(34, 211, 238, 0.1)' : 'rgba(255,255,255,0.02)',
+              border: `1px solid ${activeCam === i ? 'var(--accent-cyan)' : 'transparent'}`,
+              cursor: 'pointer', textAlign: 'left'
             }}
           >
-            <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)', fontWeight: 800, marginBottom: '4px' }}>{cam.id}</div>
-            <div style={{ fontSize: '0.7rem', color: '#fff', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{cam.name}</div>
-          </button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span style={{ fontSize: '0.6rem', color: activeCam === i ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.3)', fontWeight: 950 }}>{cam.id}</span>
+              <Camera size={12} color={activeCam === i ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.2)'} />
+            </div>
+            <div style={{ fontSize: '0.75rem', color: '#fff', fontWeight: 900, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{cam.name}</div>
+          </motion.button>
         ))}
       </div>
 
       <style jsx>{`
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes pulse { 0% { opacity: 0.2; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.1); } 100% { opacity: 0.2; transform: scale(1); } }
+        .pulse { animation: pulse 2s infinite ease-in-out; }
+        @keyframes pulse { 0%, 100% { transform: scale(0.9); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .crt-effect { background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%); background-size: 100% 4px; opacity: 0.3; pointer-events: none; }
+        .neural-grid { position: absolute; inset: 0; background-image: radial-gradient(rgba(34, 211, 238, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.2; }
+        .reticle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; opacity: 0.1; border: 1px solid #fff; border-radius: 50%; pointer-events: none; }
+        ::-webkit-scrollbar { display: none; }
       `}</style>
-    </div>
+    </motion.div>
   );
 };
 

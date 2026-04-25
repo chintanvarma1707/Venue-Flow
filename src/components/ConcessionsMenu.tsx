@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Clock, Zap, Star, Flame, Coffee, Pizza, Beer, IceCream, Utensils } from 'lucide-react';
 
 const menuItems = [
   { id: 1, name: 'Cyber Burger', price: 12.50, category: 'Food', image: '🍔', calories: '650 kcal', stall: 'Nexa Grill', wait: 8, tags: ['Popular'], color: '#f43f5e', desc: 'Double wagyu beef, neon slaw.' },
@@ -27,162 +29,214 @@ const ConcessionsMenu = ({ onAddToCart }: { onAddToCart: (item: any) => void }) 
     (item.name.toLowerCase().includes(search.toLowerCase()))
   );
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
     <div style={{ paddingBottom: '140px' }}>
       {/* Header Area */}
-      <div style={{ padding: '24px 20px' }}>
-        <h2 style={{ fontSize: '2rem', fontWeight: 900, letterSpacing: '-0.04em', marginBottom: '4px' }}>Food & <span style={{ color: 'var(--accent-cyan)' }}>Fuel</span></h2>
-        <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', marginBottom: '24px' }}>Premium concessions delivered to your seat</p>
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        style={{ padding: '24px 20px' }}
+      >
+        <h2 style={{ fontSize: '2.4rem', fontWeight: 900, letterSpacing: '-0.04em', marginBottom: '4px' }}>Food & <span style={{ color: 'var(--accent-cyan)' }}>Fuel</span></h2>
+        <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.5)', marginBottom: '32px', fontWeight: 500 }}>Premium concessions delivered to your seat</p>
         
         {/* Search */}
-        <div style={{ 
-          background: 'rgba(255,255,255,0.03)', 
-          border: '1px solid rgba(255,255,255,0.1)', 
-          borderRadius: '20px', 
-          padding: '16px 20px', 
-          display: 'flex', 
-          gap: '12px',
-          marginBottom: '32px'
-        }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <motion.div 
+          whileHover={{ borderColor: 'var(--accent-cyan)' }}
+          style={{ 
+            background: 'rgba(255,255,255,0.03)', 
+            border: '1px solid rgba(255,255,255,0.1)', 
+            borderRadius: '24px', 
+            padding: '18px 24px', 
+            display: 'flex', 
+            gap: '14px',
+            marginBottom: '32px',
+            transition: 'border-color 0.3s'
+          }}
+        >
+          <Search size={20} color="rgba(255,255,255,0.4)" />
           <input 
             placeholder="Search for snacks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1rem', outline: 'none', width: '100%' }}
+            style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1.1rem', outline: 'none', width: '100%', fontWeight: 500 }}
           />
-        </div>
+        </motion.div>
 
         {/* Categories */}
-        <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none' }}>
+        <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '12px', scrollbarWidth: 'none' }}>
           {cats.map(c => (
-            <button 
+            <motion.button 
               key={c}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setActiveCat(c)}
               style={{
-                padding: '12px 24px',
-                borderRadius: '16px',
+                padding: '14px 28px',
+                borderRadius: '20px',
                 background: activeCat === c ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.05)',
                 color: activeCat === c ? '#000' : '#fff',
                 border: 'none',
-                fontWeight: 800,
+                fontWeight: 900,
                 fontSize: '0.9rem',
                 cursor: 'pointer',
-                transition: 'all 0.3s'
+                transition: 'background 0.3s'
               }}
             >
               {c}
-            </button>
+            </motion.button>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Smart Pickup Predictor */}
-      <div style={{ padding: '0 20px 32px' }}>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        style={{ padding: '0 20px 40px' }}
+      >
         <div style={{ 
           background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
           border: '1px solid rgba(34, 211, 238, 0.2)',
-          borderRadius: '24px',
-          padding: '20px',
+          borderRadius: '28px',
+          padding: '24px',
           display: 'flex',
           alignItems: 'center',
-          gap: '16px'
+          gap: '20px',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
         }}>
           <div style={{ 
             background: 'var(--accent-cyan)', 
-            padding: '12px', 
-            borderRadius: '16px',
+            padding: '14px', 
+            borderRadius: '18px',
             color: '#000'
           }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v10l4.5 4.5"/><circle cx="12" cy="12" r="10"/></svg>
+            <Clock size={28} />
           </div>
           <div style={{ flex: 1 }}>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 900, color: '#fff', marginBottom: '2px' }}>Grab & Go: Half-Time Sync</h4>
-            <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.3 }}>
+            <h4 style={{ fontSize: '1rem', fontWeight: 900, color: '#fff', marginBottom: '4px' }}>Grab & Go: Half-Time Sync</h4>
+            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.4, fontWeight: 500 }}>
               Order now to pick up exactly at the 45' whistle. <br/>
-              <span style={{ color: 'var(--accent-cyan)', fontWeight: 700 }}>🚶 4m walk + 🕒 6m prep</span>
+              <span style={{ color: 'var(--accent-cyan)', fontWeight: 800 }}>🚶 4m walk + 🕒 6m prep</span>
             </p>
           </div>
-          <button style={{ 
-            background: '#fff', 
-            color: '#000', 
-            border: 'none', 
-            padding: '8px 16px', 
-            borderRadius: '12px', 
-            fontSize: '0.75rem', 
-            fontWeight: 800 
-          }}>SYNC NOW</button>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            style={{ 
+              background: '#fff', 
+              color: '#000', 
+              border: 'none', 
+              padding: '12px 20px', 
+              borderRadius: '16px', 
+              fontSize: '0.8rem', 
+              fontWeight: 900,
+              cursor: 'pointer'
+            }}
+          >
+            SYNC NOW
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Featured Scroll */}
-      <div style={{ padding: '0 20px 32px' }}>
-        <h4 style={{ fontSize: '0.75rem', fontWeight: 900, color: 'var(--accent-cyan)', letterSpacing: '0.1em', marginBottom: '16px', textTransform: 'uppercase' }}>Popular Near You</h4>
-        <div style={{ display: 'flex', gap: '20px', overflowX: 'auto', paddingBottom: '20px', scrollbarWidth: 'none' }}>
+      <div style={{ padding: '0 0 40px' }}>
+        <h4 style={{ fontSize: '0.8rem', fontWeight: 900, color: 'var(--accent-cyan)', letterSpacing: '0.15em', marginBottom: '20px', paddingLeft: '24px', textTransform: 'uppercase' }}>Popular Near You</h4>
+        <div style={{ display: 'flex', gap: '20px', overflowX: 'auto', padding: '0 24px 24px', scrollbarWidth: 'none' }}>
           {menuItems.slice(0, 3).map(item => (
-            <div 
+            <motion.div 
               key={item.id}
+              whileHover={{ y: -8, scale: 1.02 }}
               onClick={() => onAddToCart(item)}
               style={{
                 flexShrink: 0,
-                width: '280px',
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                width: '300px',
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.08)',
                 borderRadius: '32px',
-                padding: '24px',
+                padding: '28px',
                 position: 'relative',
                 cursor: 'pointer'
               }}
             >
-              <div style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 800 }}>${item.price.toFixed(2)}</div>
-              <div style={{ fontSize: '4rem', marginBottom: '20px' }}>{item.image}</div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '4px' }}>{item.name}</h3>
-              <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '16px' }}>{item.desc}</p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                 <div style={{ padding: '4px 8px', background: `${item.color}22`, color: item.color, borderRadius: '8px', fontSize: '0.65rem', fontWeight: 900 }}>⚡ {item.wait} MIN</div>
-                 <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', fontWeight: 700 }}>{item.calories}</div>
+              <div style={{ position: 'absolute', top: '24px', right: '24px', background: 'rgba(255,255,255,0.1)', padding: '6px 12px', borderRadius: '14px', fontSize: '0.8rem', fontWeight: 900 }}>${item.price.toFixed(2)}</div>
+              <div style={{ fontSize: '4.5rem', marginBottom: '24px' }}>{item.image}</div>
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '6px', letterSpacing: '-0.02em' }}>{item.name}</h3>
+              <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)', marginBottom: '20px', lineHeight: 1.4 }}>{item.desc}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                 <div style={{ padding: '6px 12px', background: `${item.color}22`, color: item.color, borderRadius: '10px', fontSize: '0.7rem', fontWeight: 900 }}>⚡ {item.wait} MIN</div>
+                 <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', fontWeight: 800 }}>{item.calories}</div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
 
       {/* Main Grid */}
-      <div style={{ padding: '0 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '16px' }}>
-        {filtered.map(item => (
-          <div 
-            key={item.id}
-            onClick={() => onAddToCart(item)}
-            style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.05)',
-              borderRadius: '24px',
-              padding: '16px',
-              cursor: 'pointer',
-              transition: 'transform 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>{item.image}</div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-              <h5 style={{ fontSize: '1rem', fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</h5>
-            </div>
-            <div style={{ fontSize: '0.9rem', fontWeight: 900, color: 'var(--accent-cyan)', marginBottom: '12px' }}>${item.price.toFixed(2)}</div>
-            <button style={{ 
-              width: '100%', 
-              background: 'rgba(255,255,255,0.05)', 
-              border: 'none', 
-              color: '#fff', 
-              padding: '10px', 
-              borderRadius: '12px',
-              fontSize: '0.75rem',
-              fontWeight: 800,
-              cursor: 'pointer'
-            }}>+ ADD</button>
-          </div>
-        ))}
-      </div>
+      <AnimatePresence mode="popLayout">
+        <motion.div 
+          key={activeCat}
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          style={{ padding: '0 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '20px' }}
+        >
+          {filtered.map(item => (
+            <motion.div 
+              key={item.id}
+              variants={itemVariants}
+              whileHover={{ y: -6, background: 'rgba(255,255,255,0.06)' }}
+              onClick={() => onAddToCart(item)}
+              style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.05)',
+                borderRadius: '28px',
+                padding: '20px',
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>{item.image}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <h5 style={{ fontSize: '1.1rem', fontWeight: 900, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</h5>
+              </div>
+              <div style={{ fontSize: '1rem', fontWeight: 900, color: 'var(--accent-cyan)', marginBottom: '16px' }}>${item.price.toFixed(2)}</div>
+              <motion.button 
+                whileHover={{ background: 'var(--accent-cyan)', color: '#000' }}
+                style={{ 
+                  width: '100%', 
+                  background: 'rgba(255,255,255,0.08)', 
+                  border: 'none', 
+                  color: '#fff', 
+                  padding: '12px', 
+                  borderRadius: '16px',
+                  fontSize: '0.8rem',
+                  fontWeight: 900,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                + ADD TO CART
+              </motion.button>
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };

@@ -27,7 +27,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   overflow-anchor: none;
-  background-image: 
+  background-image:
     radial-gradient(circle at 0% 0%, var(--glow-cyan) 0%, transparent 40%),
     radial-gradient(circle at 100% 100%, var(--glow-purple) 0%, transparent 40%);
 }
@@ -92,9 +92,23 @@ body {
   text-transform: uppercase;
 }
 
-.status-green { background: rgba(74, 222, 128, 0.1); color: var(--accent-green); border: 1px solid rgba(74, 222, 128, 0.2); }
-.status-red { background: rgba(244, 63, 94, 0.1); color: var(--accent-red); border: 1px solid rgba(244, 63, 94, 0.2); }
-.status-yellow { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); }
+.status-green {
+  background: rgba(74, 222, 128, 0.1);
+  color: var(--accent-green);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+.status-red {
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--accent-red);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+}
+
+.status-yellow {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.2);
+}
 
 button {
   cursor: pointer;
@@ -118,9 +132,20 @@ button {
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.8; }
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
 }
 
 .pulse {
@@ -128,8 +153,15 @@ button {
 }
 
 @keyframes seatGlow {
-  0%, 100% { box-shadow: 0 0 6px rgba(34,211,238,0.8), 0 0 12px rgba(34,211,238,0.4); }
-  50%       { box-shadow: 0 0 14px rgba(34,211,238,1),  0 0 28px rgba(34,211,238,0.6); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 6px rgba(34, 211, 238, 0.8), 0 0 12px rgba(34, 211, 238, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 14px rgba(34, 211, 238, 1), 0 0 28px rgba(34, 211, 238, 0.6);
+  }
 }
 
 .seat-mine {
@@ -137,8 +169,13 @@ button {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .slide-up {
@@ -147,17 +184,39 @@ button {
 }
 
 @keyframes float-orb-1 {
-  0% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(100px, 50px) scale(1.1); }
-  66% { transform: translate(-50px, 120px) scale(0.9); }
-  100% { transform: translate(0, 0) scale(1); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(100px, 50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-50px, 120px) scale(0.9);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
 }
 
 @keyframes float-orb-2 {
-  0% { transform: translate(0, 0) scale(1.1); }
-  33% { transform: translate(-80px, 80px) scale(1); }
-  66% { transform: translate(120px, -40px) scale(1.2); }
-  100% { transform: translate(0, 0) scale(1.1); }
+  0% {
+    transform: translate(0, 0) scale(1.1);
+  }
+
+  33% {
+    transform: translate(-80px, 80px) scale(1);
+  }
+
+  66% {
+    transform: translate(120px, -40px) scale(1.2);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1.1);
+  }
 }
 
 .bg-orb-1 {
@@ -176,7 +235,19 @@ button {
   from {
     stroke-dashoffset: 20;
   }
+
   to {
     stroke-dashoffset: 0;
   }
+}
+
+h3 {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+}
+
+/* ── Component Fixes ── */
+img,
+svg {
+  max-width: 100%;
+  height: auto;
 }

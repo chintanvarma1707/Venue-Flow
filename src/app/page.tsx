@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import BottomNav from '@/components/BottomNav';
 import StatusCard from '@/components/StatusCard';
 import ConcessionsMenu from '@/components/ConcessionsMenu';
@@ -14,9 +15,7 @@ import Onboarding from '@/components/Onboarding';
 import LiveScoreboard from '@/components/LiveScoreboard';
 import EmergencySystem from '@/components/EmergencySystem';
 import NotificationHub, { type AppNotification } from '@/components/NotificationHub';
-import Image from 'next/image';
-
-const isPadded = (view: string) => ['home'].includes(view);
+import { Bell, Trophy, Activity, Cloud, Wind, Droplets, Utensils, MapPin, Zap, AlertCircle } from 'lucide-react';
 
 export default function Home() {
   const [currentView, setCurrentView] = useState('home');
@@ -27,10 +26,9 @@ export default function Home() {
   const [showSOS, setShowSOS] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<AppNotification[]>([
-    { id: '1', title: 'Welcome to VenueFlow', message: 'Your seat SF-12 is ready. Enjoy the match!', time: '1 min ago', type: 'info' }
+    { id: '1', title: 'Welcome to ApexStadium', message: 'Your seat SF-12 is ready. Enjoy the match!', time: '1 min ago', type: 'info' }
   ]);
 
-  // Real-time Notification Generator
   useEffect(() => {
     if (!seatCode) return;
     const interval = setInterval(() => {
@@ -45,7 +43,7 @@ export default function Home() {
         { id: Date.now().toString(), ...randomMsg, time: 'Just now' },
         ...prev.slice(0, 4)
       ]);
-    }, 25000); // New notification every 25 seconds
+    }, 25000);
     return () => clearInterval(interval);
   }, [seatCode]);
 
@@ -67,12 +65,19 @@ export default function Home() {
     }, 3500); 
   };
 
-
-  const padded = isPadded(currentView);
-
   if (!seatCode) {
     return <Onboarding onComplete={setSeatCode} />;
   }
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
 
   return (
     <main style={{ 
@@ -81,158 +86,163 @@ export default function Home() {
       color: 'white', 
       position: 'relative', 
       overflowX: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center'
     }}>
+      {/* BACKGROUND DECORATION */}
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(34, 211, 238, 0.08) 0%, transparent 70%)', borderRadius: '50%', top: '-200px', left: '-100px' }} />
+        <div style={{ position: 'absolute', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(129, 140, 248, 0.08) 0%, transparent 70%)', borderRadius: '50%', bottom: '-100px', right: '-100px' }} />
+      </div>
+
       {/* VIEW MODE SWITCHER */}
       <div style={{ 
-        position: 'fixed', top: '20px', right: '20px', zIndex: 2000, display: 'flex', 
-        background: 'rgba(2,6,23,0.8)', backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255,255,255,0.1)', borderRadius: '30px', padding: '4px'
+        position: 'fixed', bottom: '24px', right: '24px', zIndex: 1500, display: 'flex', 
+        background: 'rgba(255, 255, 255, 0.03)', backdropFilter: 'blur(24px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '32px', padding: '4px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
       }}>
-        <button onClick={() => setViewMode('mobile')} style={{ background: viewMode === 'mobile' ? 'var(--accent-cyan)' : 'transparent', color: viewMode === 'mobile' ? '#000' : '#fff', border: 'none', padding: '8px 16px', borderRadius: '26px', fontSize: '0.7rem', fontWeight: 900, cursor: 'pointer' }}>MOBILE</button>
-        <button onClick={() => setViewMode('laptop')} style={{ background: viewMode === 'laptop' ? 'var(--accent-cyan)' : 'transparent', color: viewMode === 'laptop' ? '#000' : '#fff', border: 'none', padding: '8px 16px', borderRadius: '26px', fontSize: '0.7rem', fontWeight: 900, cursor: 'pointer' }}>LAPTOP</button>
+        {['mobile', 'laptop'].map(mode => (
+          <button 
+            key={mode}
+            onClick={() => setViewMode(mode as any)} 
+            style={{ 
+              background: viewMode === mode ? 'var(--accent-cyan)' : 'transparent', 
+              color: viewMode === mode ? '#000' : '#fff', 
+              border: 'none', padding: '8px 16px', borderRadius: '28px', 
+              fontSize: '0.65rem', fontWeight: 950, cursor: 'pointer',
+              transition: 'all 0.3s'
+            }}
+          >
+            {mode.toUpperCase()}
+          </button>
+        ))}
       </div>
 
       <div style={{ 
-        position: 'relative', zIndex: 1, width: '100%', maxWidth: viewMode === 'laptop' ? '1200px' : '600px',
-        margin: '0 auto', paddingTop: padded ? '24px' : '0', paddingLeft: padded ? '24px' : '0',
-        paddingRight: padded ? '24px' : '0', paddingBottom: '120px', transition: 'max-width 0.5s'
+        position: 'relative', zIndex: 1, width: '100%', 
+        maxWidth: viewMode === 'laptop' ? '1600px' : '600px',
+        margin: '0 auto', padding: 'clamp(16px, 4vw, 32px)', paddingBottom: '140px', 
+        transition: 'all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)'
       }}>
 
-        {currentView === 'home' && (
-          <div key="home-view">
-            <header style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-cyan) 0%, #3b82f6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 900, color: '#000' }}>C</div>
-                <div>
-                  <h1 style={{ fontSize: '1.4rem', fontWeight: 900 }}>{seatCode.split('-')[0]} User</h1>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{seatCode} • 2,450 PTS</span>
-                </div>
-              </div>
-              <button 
-                onClick={() => setShowNotifications(true)}
-                style={{ 
-                  position: 'relative', width: '48px', height: '48px', borderRadius: '16px', 
-                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                {notifications.length > 0 && (
-                  <div style={{ position: 'absolute', top: '12px', right: '12px', width: '10px', height: '10px', background: '#ef4444', borderRadius: '50%', border: '2px solid #020617' }} />
-                )}
-              </button>
-            </header>
+        <AnimatePresence mode="wait">
+          {currentView === 'home' && (
+            <motion.div 
+              key="home-view" variants={containerVariants} initial="hidden" animate="show" exit={{ opacity: 0, y: -20 }}
+              style={{ display: 'grid', gridTemplateColumns: viewMode === 'laptop' ? '320px 1fr 340px' : '1fr', gap: '24px' }}
+            >
+              {/* --- LEFT COLUMN: PROFILE & STATS --- */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <motion.header variants={itemVariants} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '32px', padding: '24px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+                    <div style={{ width: '56px', height: '56px', borderRadius: '20px', background: 'linear-gradient(135deg, var(--accent-cyan) 0%, #3b82f6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', fontWeight: 950, color: '#000' }}>{seatCode.charAt(0)}</div>
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setShowNotifications(true)} style={{ position: 'relative', width: '44px', height: '44px', borderRadius: '14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                      <Bell size={20} />
+                      {notifications.length > 0 && <div style={{ position: 'absolute', top: '12px', right: '12px', width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%', border: '2px solid #020617' }} />}
+                    </motion.button>
+                  </div>
+                  <h1 style={{ fontSize: '1.4rem', fontWeight: 950, letterSpacing: '-0.04em', margin: 0 }}>Hello, {seatCode.split('-')[0]}</h1>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', marginTop: '8px', fontWeight: 700 }}>
+                    <MapPin size={14} color="var(--accent-cyan)" /> {seatCode} 
+                    <span style={{ opacity: 0.2 }}>|</span>
+                    <Trophy size={14} color="#fbbf24" /> 2.4k PTS
+                  </div>
+                </motion.header>
 
-            <div style={{ 
-              display: viewMode === 'laptop' ? 'grid' : 'block',
-              gridTemplateColumns: viewMode === 'laptop' ? '1.2fr 1fr' : '1fr',
-              gap: '32px'
-            }}>
-              {/* COL 1 */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                <LiveScoreboard />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                   <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '20px', padding: '16px', textAlign: 'center' }}>
-                      <div style={{ fontSize: '1.2rem', fontWeight: 800 }}>24°C</div>
-                      <div style={{ fontSize: '0.6rem', opacity: 0.5 }}>WEATHER</div>
-                   </div>
-                   <div style={{ background: 'rgba(34,211,238,0.1)', border: '1px solid var(--accent-cyan)', borderRadius: '20px', padding: '16px', textAlign: 'center' }}>
-                      <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>OPEN</div>
-                      <div style={{ fontSize: '0.6rem', opacity: 0.5 }}>ROOF</div>
-                   </div>
-                   <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '20px', padding: '16px', textAlign: 'center' }}>
-                      <div style={{ fontSize: '1.2rem', fontWeight: 800 }}>45%</div>
-                      <div style={{ fontSize: '0.6rem', opacity: 0.5 }}>HUMIDITY</div>
-                   </div>
-                </div>
-                <FanSync />
-                <Wayfinding />
+                <motion.div variants={itemVariants} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+                  {[
+                    { label: 'WEATHER', value: '24°C', icon: Cloud, color: '#fff' },
+                    { label: 'ROOF', value: 'OPEN', icon: Wind, color: 'var(--accent-cyan)' },
+                    { label: 'HUMID', value: '45%', icon: Droplets, color: '#fff' }
+                  ].map((item, i) => (
+                    <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '16px 8px', textAlign: 'center' }}>
+                      <item.icon size={16} color={item.color} style={{ marginBottom: '8px', opacity: 0.5 }} />
+                      <div style={{ fontSize: '1rem', fontWeight: 950, color: item.color }}>{item.value}</div>
+                      <div style={{ fontSize: '0.5rem', fontWeight: 800, opacity: 0.3, letterSpacing: '0.1em', marginTop: '4px' }}>{item.label}</div>
+                    </div>
+                  ))}
+                </motion.div>
+
+                <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                   <Wayfinding />
+                   <FanSync />
+                </motion.div>
               </div>
 
-              {/* COL 2 */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                <section className="glass-morphism" style={{ padding: '24px' }}>
-                   <h3 style={{ marginBottom: '16px', fontWeight: 800 }}>Live Density</h3>
-                   <StadiumBowl onSelect={() => setCurrentView('map')} />
-                </section>
-                <section>
-                   <h3 style={{ marginBottom: '16px', fontWeight: 800 }}>Amenities</h3>
+              {/* --- CENTER COLUMN: STADIUM & SCORE --- */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <motion.div variants={itemVariants}>
+                  <LiveScoreboard />
+                </motion.div>
+                
+                <motion.div variants={itemVariants} style={{ background: 'rgba(15, 23, 42, 0.4)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '40px', padding: '32px', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ position: 'absolute', top: '24px', left: '32px', zIndex: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <Activity size={16} color="var(--accent-cyan)" />
+                      <h3 style={{ fontSize: '0.85rem', fontWeight: 950, margin: 0 }}>LIVE_DIGITAL_TWIN</h3>
+                    </div>
+                    <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', fontWeight: 800, letterSpacing: '0.05em' }}>Sharjah Intl Stadium Cluster A</div>
+                  </div>
+                  <div style={{ marginTop: '20px' }}>
+                    <StadiumBowl onSelect={() => setCurrentView('map')} />
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* --- RIGHT COLUMN: NAVIGATION & NEAR BY --- */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <motion.div variants={itemVariants} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  {[
+                    { id: 'map', label: 'VISION AI', icon: Activity, color: 'var(--accent-cyan)', text: '#000' },
+                    { id: 'order', label: 'FOOD ORDER', icon: Utensils, color: '#f59e0b', text: '#fff' },
+                    { id: 'seats', label: 'FIND SEAT', icon: MapPin, color: '#3b82f6', text: '#fff' },
+                    { id: 'sos', label: 'SOS HELP', icon: AlertCircle, color: '#ef4444', text: '#fff' }
+                  ].map(btn => (
+                    <motion.button key={btn.id} whileHover={{ y: -4, background: btn.color, color: btn.text }} whileTap={{ scale: 0.96 }} onClick={() => btn.id === 'sos' ? setShowSOS(true) : setCurrentView(btn.id)} style={{ padding: '24px 12px', borderRadius: '24px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', fontWeight: 950, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', transition: 'all 0.3s' }}>
+                      <btn.icon size={22} />
+                      <span style={{ fontSize: '0.7rem', letterSpacing: '0.05em' }}>{btn.label}</span>
+                    </motion.button>
+                  ))}
+                </motion.div>
+
+                <motion.section variants={itemVariants} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '32px', padding: '24px' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ fontWeight: 950, fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)' }}>NEAR_YOU</h3>
+                      <div style={{ fontSize: '0.6rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>REALTIME</div>
+                   </div>
                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       <StatusCard title="Nexa Grill" location="Gate 4" waitTime={4} status="optimal" />
-                      <StatusCard title="Restroom" location="Sec 208" waitTime={12} status="congested" />
+                      <StatusCard title="Washroom A" location="Sec 208" waitTime={12} status="congested" />
                    </div>
-                </section>
-                <section>
-                   <h3 style={{ marginBottom: '16px', fontWeight: 800 }}>Quick Actions</h3>
-                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <button onClick={() => setCurrentView('map')} style={{ padding: '16px', borderRadius: '16px', background: 'var(--accent-cyan)', color: '#000', border: 'none', fontWeight: 900, cursor: 'pointer' }}>VISION AI</button>
-                      <button onClick={() => setCurrentView('order')} style={{ padding: '16px', borderRadius: '16px', background: '#f59e0b', color: '#fff', border: 'none', fontWeight: 900, cursor: 'pointer' }}>ORDER FOOD</button>
-                      <button onClick={() => setCurrentView('seats')} style={{ padding: '16px', borderRadius: '16px', background: '#3b82f6', color: '#fff', border: 'none', fontWeight: 900, cursor: 'pointer' }}>FIND SEAT</button>
-                      <button onClick={() => setShowSOS(true)} style={{ padding: '16px', borderRadius: '16px', background: '#ef4444', color: '#fff', border: 'none', fontWeight: 900, cursor: 'pointer' }}>SOS HELP</button>
-                   </div>
-                </section>
+                </motion.section>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
 
-        {currentView === 'seats' && <SeatMap />}
-        {currentView === 'order' && <ConcessionsMenu onAddToCart={addToCart} />}
-        {currentView === 'map' && <StadiumMapView />}
+          {currentView === 'seats' && <motion.div key="seats" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}><SeatMap /></motion.div>}
+          {currentView === 'order' && <motion.div key="order" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}><ConcessionsMenu onAddToCart={addToCart} /></motion.div>}
+          {currentView === 'map' && <motion.div key="map" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}><StadiumMapView /></motion.div>}
+        </AnimatePresence>
       </div>
 
       <Cart items={cartItems} onCheckout={handleCheckout} onClear={clearCart} />
       <BottomNav activeView={currentView} onViewChange={setCurrentView} />
 
-      {/* MODALS */}
-      {showSOS && <EmergencySystem onClose={() => setShowSOS(false)} />}
-      {showNotifications && (
-        <NotificationHub 
-          notifications={notifications} 
-          onClose={() => setShowNotifications(false)} 
-          onClear={() => setNotifications([])} 
-        />
-      )}
+      <AnimatePresence>
+        {showSOS && <EmergencySystem onClose={() => setShowSOS(false)} />}
+        {showNotifications && <NotificationHub notifications={notifications} onClose={() => setShowNotifications(false)} onClear={() => setNotifications([])} />}
+      </AnimatePresence>
 
-      {/* ── Order Success Modal ── */}
-      {showOrderSuccess && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(2, 6, 23, 0.8)', backdropFilter: 'blur(10px)',
-          animation: 'fadeIn 0.3s ease-out'
-        }}>
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(34,211,238,0.1) 0%, rgba(34,211,238,0.02) 100%)',
-            border: '1px solid rgba(34,211,238,0.3)',
-            borderRadius: '32px', padding: '40px', textAlign: 'center',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 40px rgba(34,211,238,0.2)',
-            animation: 'slideUpBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-            maxWidth: '400px', width: '90%'
-          }}>
-            <div style={{ 
-              width: '80px', height: '80px', borderRadius: '50%', background: 'var(--accent-cyan)', 
-              margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 0 30px var(--accent-cyan)', animation: 'pulseRing 2s infinite'
-            }}>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <h2 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '8px' }}>Order Placed!</h2>
-            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem', lineHeight: 1.5 }}>
-              Your food is being prepared.<br/>It will be delivered to <strong style={{ color: 'var(--accent-cyan)' }}>Seat {seatCode}</strong> in ~8 minutes.
-            </p>
-          </div>
-        </div>
-      )}
-
-      <style jsx>{`
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUpBounce { from { transform: translateY(40px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-        @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(34,211,238,0.7); } 70% { box-shadow: 0 0 0 20px rgba(34,211,238,0); } 100% { box-shadow: 0 0 0 0 rgba(34,211,238,0); } }
-      `}</style>
+      <AnimatePresence>
+        {showOrderSuccess && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(2, 6, 23, 0.9)', backdropFilter: 'blur(20px)' }}>
+            <motion.div initial={{ scale: 0.8, y: 40 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.8, opacity: 0 }} style={{ background: 'linear-gradient(135deg, rgba(34,211,238,0.15) 0%, rgba(34,211,238,0.02) 100%)', border: '1px solid rgba(34,211,238,0.4)', borderRadius: '40px', padding: '48px', textAlign: 'center', boxShadow: '0 40px 100px rgba(0,0,0,0.8), 0 0 60px rgba(34,211,238,0.2)', maxWidth: '440px', width: '90%' }}>
+              <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--accent-cyan)', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 40px var(--accent-cyan)' }}><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <h2 style={{ fontSize: '2rem', fontWeight: 950, marginBottom: '12px', letterSpacing: '-0.04em' }}>ORDER_PLACED</h2>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '1.1rem', lineHeight: 1.5, fontWeight: 500 }}>Preparing your request. Delivery to <strong style={{ color: 'var(--accent-cyan)' }}>Seat {seatCode}</strong> in ~8m.</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
