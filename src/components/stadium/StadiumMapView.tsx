@@ -7,12 +7,12 @@ import {
   Shield, Eye, Terminal, ChevronRight,
   Maximize2, Zap
 } from 'lucide-react';
-import { StadiumBowl } from './StadiumBowl';
-import VisionHub from './VisionHub';
-import QueueIntelligence from './QueueIntelligence';
-import AdminDashboard from './AdminDashboard';
+import StadiumBowl from './StadiumBowl';
+import VisionHub from '@/components/features/VisionHub';
+import QueueIntelligence from '@/components/features/QueueIntelligence';
+import AdminDashboard from '@/components/admin/AdminDashboard';
 import Heatmap from './Heatmap';
-import SuperAdminControl from './SuperAdminControl';
+import SuperAdminControl from '@/components/admin/SuperAdminControl';
 
 // ── Crowd Timeline Data (Generated Dynamically) ────────────────────────────────
 interface TimePoint {

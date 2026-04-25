@@ -8,8 +8,8 @@ import {
   Clock, Zap, LayoutGrid, Monitor, Terminal,
   Cpu, BarChart3, Globe, Lock
 } from 'lucide-react';
-import { StadiumBowl } from '@/components/StadiumBowl';
-import { STANDS, Stand } from '@/components/stadiumData';
+import { StadiumBowl } from '@/components/stadium/StadiumBowl';
+import { STANDS, Stand } from '@/lib/stadiumData';
 
 // Data models
 interface ZoneData {

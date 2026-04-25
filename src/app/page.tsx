@@ -2,19 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import BottomNav from '@/components/BottomNav';
-import StatusCard from '@/components/StatusCard';
-import ConcessionsMenu from '@/components/ConcessionsMenu';
-import SeatMap from '@/components/SeatMap';
-import Cart from '@/components/Cart';
-import Wayfinding from '@/components/Wayfinding';
-import StadiumMapView from '@/components/StadiumMapView';
-import StadiumBowl from '@/components/StadiumBowl';
-import FanSync from '@/components/FanSync';
-import Onboarding from '@/components/Onboarding';
-import LiveScoreboard from '@/components/LiveScoreboard';
-import EmergencySystem from '@/components/EmergencySystem';
-import NotificationHub, { type AppNotification } from '@/components/NotificationHub';
+import BottomNav from '@/components/ui/BottomNav';
+import StatusCard from '@/components/ui/StatusCard';
+import ConcessionsMenu from '@/components/features/ConcessionsMenu';
+import SeatMap from '@/components/stadium/SeatMap';
+import Cart from '@/components/ui/Cart';
+import Wayfinding from '@/components/features/Wayfinding';
+import StadiumMapView from '@/components/stadium/StadiumMapView';
+import StadiumBowl from '@/components/stadium/StadiumBowl';
+import FanSync from '@/components/features/FanSync';
+import Onboarding from '@/components/auth/Onboarding';
+import LiveScoreboard from '@/components/features/LiveScoreboard';
+import EmergencySystem from '@/components/features/EmergencySystem';
+import NotificationHub, { type AppNotification } from '@/components/ui/NotificationHub';
 import { Bell, Trophy, Activity, Cloud, Wind, Droplets, Utensils, MapPin, Zap, AlertCircle } from 'lucide-react';
 
 export default function Home() {

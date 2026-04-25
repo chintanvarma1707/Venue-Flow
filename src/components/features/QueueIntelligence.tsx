@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { AMENITIES } from './stadiumData';
+import { AMENITIES } from '@/lib/stadiumData';
 
 interface VisionStats {
   zone_id: string;

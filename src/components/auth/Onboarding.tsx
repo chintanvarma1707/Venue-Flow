@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import StadiumBowl from './StadiumBowl';
+import StadiumBowl from '@/components/stadium/StadiumBowl';
 
 interface OnboardingProps {
   onComplete: (seat: string) => void;

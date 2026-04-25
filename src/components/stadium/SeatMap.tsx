@@ -2,8 +2,8 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { STANDS, generateSeats, SEAT_TOP, SEAT_SIDE, type Stand } from './stadiumData';
-import { StadiumBowl } from './StadiumBowl';
+import { STANDS, generateSeats, SEAT_TOP, SEAT_SIDE, type Stand, AMENITIES } from '@/lib/stadiumData';
+import StadiumBowl from './StadiumBowl';
 import { ChevronLeft, MapPin, Users, Star, Shield, Info, Activity } from 'lucide-react';
 
 // ─── Stat Card Component with Animation ───

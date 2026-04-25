@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { STANDS, Stand } from './stadiumData';
+import { STANDS, Stand } from '@/lib/stadiumData';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 const R = (d: number) => (d * Math.PI) / 180;
